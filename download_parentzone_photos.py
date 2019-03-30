@@ -78,12 +78,13 @@ def get_parentzone_photos(email, password, output_folder):
             extension = 'jpg'
         elif element.tag_name == 'video':
             extension = 'mp4'
-        image_output_url = os.path.join(output_folder, f'{image_id}.{extension}')
+        image_output_path = os.path.join(output_folder,
+                                         f'{image_id}.{extension}')
 
         # Only download and save the files 
-        if not os.path.exists(image_output_url):
+        if not os.path.exists(image_output_path):
             r = requests.get(image_url, allow_redirects=True)
-            open(image_output_url, 'wb').write(r.content)
+            open(image_output_path, 'wb').write(r.content)
 
 if __name__ == '__main__':
     get_parentzone_photos()
