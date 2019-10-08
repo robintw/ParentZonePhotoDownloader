@@ -10,6 +10,7 @@ import requests
 
 import click
 
+
 @click.command()
 @click.option('--email', help='Email address used to log in to ParentZone',
               prompt='Email address used to log in to ParentZone')
@@ -45,7 +46,6 @@ def get_parentzone_photos(email, password, output_folder):
     submit_button = driver.find_element_by_id('submit-filter')
     submit_button.click()
 
-
     # The page has infinite scrolling, and scrolling by the JS scroll function
     # doesn't seem to work
     # So intead, set up a loop to scroll infinitely, and stop when we
@@ -59,7 +59,7 @@ def get_parentzone_photos(email, password, output_folder):
         # Get all photos
         media_elements = driver.find_elements_by_class_name('img-responsive')
         n_photos = len(media_elements)
-        
+
         if n_photos > old_n_photos:
             old_n_photos = n_photos
         else:
@@ -81,10 +81,11 @@ def get_parentzone_photos(email, password, output_folder):
         image_output_path = os.path.join(output_folder,
                                          f'{image_id}.{extension}')
 
-        # Only download and save the files 
+        # Only download and save the files
         if not os.path.exists(image_output_path):
             r = requests.get(image_url, allow_redirects=True)
             open(image_output_path, 'wb').write(r.content)
+
 
 if __name__ == '__main__':
     get_parentzone_photos()
