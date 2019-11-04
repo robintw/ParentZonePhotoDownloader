@@ -81,7 +81,7 @@ def get_parentzone_photos(email, password, output_folder):
         image_output_path = os.path.join(output_folder,
                                          f'{image_id}.{extension}')
 
-        # Only download and save the files
+        # Only download and save the file if it doesn't already exist
         if not os.path.exists(image_output_path):
             r = requests.get(image_url, allow_redirects=True)
             open(image_output_path, 'wb').write(r.content)
