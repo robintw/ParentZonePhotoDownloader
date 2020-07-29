@@ -39,7 +39,7 @@ def get_parentzone_photos(email, password, output_folder):
     driver.get('https://www.parentzone.me/#/timeline')
 
     # Choose 'Observation' from the dropdown
-    dropdown = Select(driver.find_element_by_xpath('//*[@id="filter"]/div[2]/div[4]/div/div[1]/select'))
+    dropdown = Select(driver.find_element_by_xpath('//*[@id="filter"]//select'))
     dropdown.select_by_value('7')
 
     # Submit form
