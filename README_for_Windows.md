@@ -13,7 +13,7 @@
 into the text document. Save the document as "download_parentzone_photos.py"
 9. Download ChromeDriver from here: https://chromedriver.chromium.org/downloads (choose the link matching the version of Chrome you have installed, and the file ending in "win32.zip")
 10. Extract chromedriver.exe from the zip file, and copy it into "C:\cygwin64\home\<your username here>" in the Windows File Manager.
-11. In the Cygwin terminal, run this command "export PATH=$^CTH:$(pwd)"
+11. In the Cygwin terminal, run this command "export PATH=$PATH:$(pwd)"
 12. Then run this command "python3.8.exe download_parentzone_photos.py"
 13. You will be prompted to enter your email / password, hit enter after each one.
 14. Wait, you'll see a browser window open automatically. Eventually it will close.
