@@ -10,3 +10,5 @@ Requires:
  - `requests`
 
 You'll also need to set up [Chrome Driver](https://chromedriver.chromium.org/) for Selenium - or change the code to use another web driver.
+
+For Windows instructions, see the [Windows README](README_for_Windows.md)
