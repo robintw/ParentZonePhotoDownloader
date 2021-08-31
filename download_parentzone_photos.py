@@ -106,8 +106,8 @@ def get_parentzone_photos(email, password, output_folder):
 
         # Add visible photos to collection.
         time.sleep(1)  # Required or crashes ToDo: replace with search for Expected Conditions
-        visible_pictures = driver.find_elements_by_xpath("//img[starts-with(@src, "
-                                                         "'https://api.parentzone.me/v1/media/')]")
+        visible_pictures = driver.find_elements_by_xpath(
+            "//img[starts-with(@src, 'https://api.parentzone.me/v1/media/')]")
         for picture in visible_pictures:
             if photo_collection.add_image(picture.get_attribute("src")):
                 # True only if the picture was not in the list already
