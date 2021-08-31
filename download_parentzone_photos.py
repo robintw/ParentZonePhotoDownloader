@@ -44,6 +44,8 @@ class PhotoRetriever:
         if not os.path.exists(output_folder):
             os.mkdir(output_folder)
 
+        download_count = 0
+
         # For each image that we've found
         for number in self.numbers:
             # Parentzone looks to retrieve the images using the following API:
@@ -59,6 +61,8 @@ class PhotoRetriever:
             if not os.path.exists(image_output_path):
                 r = requests.get(image_url, allow_redirects=True)
                 open(image_output_path, 'wb').write(r.content)
+                download_count += 1
+        return download_count
 
 
 @click.command()
@@ -84,14 +88,15 @@ def get_parentzone_photos(email, password, output_folder):
     passwd_field = driver.find_element_by_xpath('//*[@id="password"]')
     passwd_field.clear()
     passwd_field.send_keys(password)
-    time.sleep(2)
+    time.sleep(2)  # ToDo: replace with implicit wait
     login_button = driver.find_element_by_xpath("//button[@data-test-id='login_btn']")
     login_button.click()
 
     # Give it time to finish logging in
-    time.sleep(2)
+    time.sleep(2)  # ToDo: replace with implicit wait
 
     # Go to Gallery view
+    # Note: Gallery currently only includes photos, not videos
     driver.get('https://www.parentzone.me/gallery')
 
     added_pictures = 1
@@ -100,26 +105,22 @@ def get_parentzone_photos(email, password, output_folder):
         # Adds visible pictures and scrolls down
         added_pictures = 0
 
-        # Add visible photos to collection. ToDo: Deal with videos -- I don't have any to test
+        # Add visible photos to collection.
+        time.sleep(1)  # Required or crashes ToDo: replace with implicit wait
         visible_pictures = driver.find_elements_by_xpath("//img[starts-with(@src, 'https://api.parentzone.me/v1/media/')]")
         for picture in visible_pictures:
             if photo_collection.add_image(picture.get_attribute("src")):
                 # True only if the picture was not in the list already
                 added_pictures += 1
 
-        # Scroll down by just less than a page after waiting a pause
-        # (Selenium seems to crash if too quick)
-        time.sleep(1)
+        # Scroll down a page (and then up a bit to make sure we don't miss a row)
         thumbnails_pane = driver.find_element_by_xpath('//div[@tabindex="0"]')
-        time.sleep(1)
         thumbnails_pane.send_keys(Keys.PAGE_DOWN)
-        time.sleep(1)
-        thumbnails_pane.send_keys(Keys.ARROW_UP)
-        thumbnails_pane.send_keys(Keys.ARROW_UP)
-        thumbnails_pane.send_keys(Keys.ARROW_UP)
-        time.sleep(1)
+        thumbnails_pane.send_keys(Keys.ARROW_UP * 3)
 
-    photo_collection.download_pictures(output_folder)
+    print(len(photo_collection.numbers), "pictures found in Gallery")
+    number_downloaded = photo_collection.download_pictures(output_folder)
+    print(number_downloaded, "photos did not already exist and were downloaded")
 
 
 if __name__ == '__main__':
