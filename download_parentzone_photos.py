@@ -87,12 +87,12 @@ def get_parentzone_photos(email, password, output_folder):
     passwd_field = driver.find_element_by_xpath('//*[@id="password"]')
     passwd_field.clear()
     passwd_field.send_keys(password)
-    time.sleep(2)  # ToDo: replace with implicit wait
+    time.sleep(2)  # ToDo: replace with search for Expected Conditions
     login_button = driver.find_element_by_xpath("//button[@data-test-id='login_btn']")
     login_button.click()
 
     # Give it time to finish logging in
-    time.sleep(2)  # ToDo: replace with implicit wait
+    time.sleep(2)  # ToDo: replace with search for Expected Conditions
 
     # Go to Gallery view
     # Note: Gallery currently only includes photos, not videos
@@ -105,8 +105,9 @@ def get_parentzone_photos(email, password, output_folder):
         added_pictures = 0
 
         # Add visible photos to collection.
-        time.sleep(1)  # Required or crashes ToDo: replace with implicit wait
-        visible_pictures = driver.find_elements_by_xpath("//img[starts-with(@src, 'https://api.parentzone.me/v1/media/')]")
+        time.sleep(1)  # Required or crashes ToDo: replace with search for Expected Conditions
+        visible_pictures = driver.find_elements_by_xpath("//img[starts-with(@src, "
+                                                         "'https://api.parentzone.me/v1/media/')]")
         for picture in visible_pictures:
             if photo_collection.add_image(picture.get_attribute("src")):
                 # True only if the picture was not in the list already
