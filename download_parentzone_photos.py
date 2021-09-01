@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 import click
 import os
+import piexif
 import requests
 import time
 
+from datetime import datetime
+from dateutil.parser import parse as parsedate
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from urllib.parse import urlparse, parse_qs
@@ -59,7 +62,19 @@ class PhotoRetriever:
             # Only download and save the file if it doesn't already exist
             if not os.path.exists(image_output_path):
                 r = requests.get(image_url, allow_redirects=True)
+                file_modified_string = r.headers["last-modified"]
+                file_modified_datetime = parsedate(file_modified_string)
                 open(image_output_path, 'wb').write(r.content)
+
+                exif_dict = piexif.load(image_output_path)
+                # ToDo: Consider adjusting the below for local timezone
+                new_date = file_modified_datetime.strftime("%Y:%m:%d %H:%M:%S")
+                exif_dict['0th'][piexif.ImageIFD.DateTime] = new_date
+                exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal] = new_date
+                exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized] = new_date
+                exif_bytes = piexif.dump(exif_dict)
+                piexif.insert(exif_bytes, image_output_path)
+
                 download_count += 1
         return download_count
 
