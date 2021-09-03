@@ -6,6 +6,7 @@ import requests
 import time
 
 from datetime import datetime
+from dateutil import tz
 from dateutil.parser import parse as parsedate
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
@@ -64,11 +65,14 @@ class PhotoRetriever:
                 r = requests.get(image_url, allow_redirects=True)
                 file_modified_string = r.headers["last-modified"]
                 file_modified_datetime = parsedate(file_modified_string)
+
+                # Convert file_modified_datetime to the auto-detected local timezone
+                local_file_modified_datetime = file_modified_datetime.astimezone(tz.tzlocal())
+
                 open(image_output_path, 'wb').write(r.content)
 
                 exif_dict = piexif.load(image_output_path)
-                # ToDo: Consider adjusting the below for local timezone
-                new_date = file_modified_datetime.strftime("%Y:%m:%d %H:%M:%S")
+                new_date = local_file_modified_datetime.strftime("%Y:%m:%d %H:%M:%S")
                 exif_dict['0th'][piexif.ImageIFD.DateTime] = new_date
                 exif_dict['Exif'][piexif.ExifIFD.DateTimeOriginal] = new_date
                 exif_dict['Exif'][piexif.ExifIFD.DateTimeDigitized] = new_date
